@@ -113,17 +113,11 @@ switch(var)
                 continue;
 	};
 	case(1)
-	{
 		std::println("Value below 2");
-	};
 	case(2 ... 9) #likely
-	{
 		std::println("Range-case value");
-	};
 	case(default)
-	{
 		std::println("Default value");
-	};
 };
 ```
 Output:
@@ -173,29 +167,17 @@ float var = 3.141592;
 switch(var) 	// ε omited, float.epsilon used.
 {
 	case(std::sqrt(2))
-	{
 		std::println("irrational √2");
-	};
 	case(std::phi)
-	{
 		std::println("irrational golden number");
-	};
 	case(std::e)
-	{
 		std::println("irrational e");
-	};
 	case(std::pi)
-	{
 		std::println("irrational π");
-	};
 	case(default) 
-	{
 		std::println("Not in supported irrational list");
-	};
 	case(error)
-	{
 		std::println("Error while parsing number");
-	};
 };
 ```
 In this example, the default case would be used, since the epsilon value is incredibly small. 
@@ -213,27 +195,18 @@ std::string var = "Good morning";
 switch(var /*, std::hash */)	// std::hash used by default
 {
 	case("Hello World")		// Conversion from const char* to std::string
-	{
 		std::print("Message was Hello World");
-	};
 	case(std::wstring("Good morning"))	// Conversion from std::wstring to std::string
-	{
 		std::print("Message was good morning");
-	};
 	case(1)				// Conversion from integer 1 to string "1"
-	{
 		std::print("Message was 1");	
-	};
 	case(null)			// Uses std::hash(null)
-	{
 		std::print("No message");
-	};
-	/* case(std::file{"dest.txt"}){}; */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
-	/* case("Good morning"){}; */		// Compile-time error, identical hash in two cases
+
+	/* case(std::file{"dest.txt"}) */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
+	/* case("Good morning") */		// Compile-time error, identical hash in two cases
 	case(default)				// Covers the error case
-	{
 		std::print("No message or error parsing message");
-	};
 };
 ```
 
@@ -241,20 +214,18 @@ switch(var /*, std::hash */)	// std::hash used by default
 
 ### Runtime type checking
 Besides values, switch statements can also be used to switch between types at runtime, specifically polymorphic instances through pointer or reference types.
-By using a type as switchee expression in the `switch` statement, it is then possible to use `case(instanceof(someOtherType))` cases. In the following example, class `Vehicle` is defined and classes `Truck`, `Bicycle` and `Boat` are created to inherit from class `Vehicle`.
+In the following example, class `Vehicle` is defined and classes `Truck`, `Bicycle` and `Boat` are created to inherit from class `Vehicle`.
+Type checking cases and value checking cases cannot be mixed in the same switch statement. 
 ```c
 Vehicle* myTruck = new Truck();
 switch(myTruck)
 {
-	case(instanceof(Bicycle)) #fallsthrough
+	case(instanceof(Bicycle))
+                continue;
 	case(instanceof(Truck))
-	{
 		std::print("Land vehicle");
-	};
 	case(instanceof(Boat))
-	{
 		std::print("Sea vehicle");
-	};
 };
 ```
 Output:
