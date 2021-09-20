@@ -31,7 +31,54 @@ Tous les segments de code (fonctions, conditions, classes, structures, initialis
 ## Switch Case
 
 ### Syntaxe
-Une switch case commence par le mot-clé `switch`, suivi par, entre `()`, la variable sur laquelle switcher, puis un bloc de code.
+
+<details>
+<summary> Detailed Syntax </summary>
+
+switch_statement:
+> `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
+
+switchee:
+- Expression donnant un résultat numérique, une valeur énumérée, une valeur à virgule ou une valeur hashable.
+
+switch_epsilon:
+- valide si `std::has_point<typeof(switchee)> == true`, valeur à virgule du type de *switchee*
+
+switch_hash_function:
+- valide si `std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
+std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_function)[0].type == typeof(switchee) && std::is_integral(std::returns(switch_hash_function).type) == true`.
+*switch_hash_function* doit donc être une fonction `constexpr` à paramètre unique pouvant prendre en paramètre *switchee* et retourner un entier.
+	
+switch_block:
+> {
+> &nbsp;&nbsp;&nbsp;&nbsp; <sup><sub>(1 ... n)</sub></sup> *case_statement*
+> };
+
+case_statement:
+> `case`(*case_value*) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block* 
+
+case_value:
+- one of
+	- `default`
+	- `error`
+	- expression de type `typeof(switchee)` (si une fonction de hash n'est pas utilisée)
+	- expression de type `std::returns(switch_hash_function).type` (si la fonction de hash est utilisée)
+
+case_attribute:
+- one of
+	- `#fallsthrough`
+	- `#likely`
+	- `#unlikely`
+
+case_block:
+> {
+> &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>(0 ... n)</sub></sup> statement
+> };
+
+</details>
+
+
+Une switch case commence par le mot-clé `switch`, suivi par, entre `()`, la variable sur laquelle switcher, puis un bloc de switching, qui peut commencer par du code normal d'initialisation.
 Par la suite, chaque cas est dénoté par `case(x)`, où x est la valeur connue à compile-time sur laquelle switcher. Chaque cas contient ensuite un bloc de code.
 
 Le cas par défault est dénoté par `case(default)`, et un cas d'erreur de parsing est également couvert par `case(error)`. 
@@ -40,7 +87,7 @@ Le cas par défault est dénoté par `case(default)`, et un cas d'erreur de pars
 uint var = 0;
 switch(var)
 {
-	case(0) fallsthrough
+	case(0) #fallsthrough
 	{
 		std::println("Value was 0");
 	};
@@ -48,7 +95,7 @@ switch(var)
 	{
 		std::println("Value below 2");
 	};
-	case(2 ... 9)
+	case(2 ... 9) #likely
 	{
 		std::println("Range-case value");
 	};
@@ -74,6 +121,8 @@ Permet d'utiliser des ranges de chiffres pour couvrir plusieurs cas.
 
 ### Fallthrough
 Le mot-clé `fallsthrough` peut être utilisé pour supporter des cas qui passent au cas suivant après leur exécution.
+
+### TODO : Likely / Unlikely
 
 ### Decimal support
 Les switch cases permettent de switcher sur des nombres à virgule flottantes et virgule fixe. Un ε doit alors être fourni comme 2e argument du mot-clé `switch`. Si le ε n'est pas fourni, `std::epsilon<type>` est pris comme valeur par défaut.
