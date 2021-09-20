@@ -65,7 +65,7 @@ std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_
 <br>
 
 - case_statement:
-	> `case`(*case_value* <sup><sub>(or)</sub></sup> `instanceof`(*case_type_value*)) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block* 
+	> `case`(*case_value*) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block* 
 	
 <br>
 
