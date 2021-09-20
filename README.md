@@ -1,9 +1,7 @@
+# PascalScript
+Programming language strongly inspired from C++, with features from other languages that I like.
 
-
-# Fonctionalités du PascalScript
-Language de programmation fortement inspiré du C++, avec des fonctionalités d'autres languages que j'aime.
-
-## Mots-clé
+## Keywords
 - [`switch`](#switch-case)
 	- `case`
 		- `case(default)`
@@ -22,32 +20,28 @@ Language de programmation fortement inspiré du C++, avec des fonctionalités d'
 
 
 ## Structures
-Tous les segments de code (fonctions, conditions, classes, structures, initialisations ect.) sont dénotés par une `{` d'ouverture et une `};` de fermeture.
-
-## Classes
-
-## Variables
+Every code block is marked with an opening `{` and a closing `};`
 
 ## Switch Case
 
-### Syntaxe
+### Syntax
 
 <details>
 <summary> Detailed Syntax </summary>
 
-switch_statement:
-> `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
+- switch_statement:
+	- > `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
 
-switchee:
-- Expression donnant un résultat numérique, une valeur énumérée, une valeur à virgule ou une valeur hashable.
+- switchee:
+	- Expression resulting in a numerical value, an enumerated value, a floating-point / fixed-point value or a hashable value.
 
-switch_epsilon:
-- valide si `std::has_point<typeof(switchee)> == true`, valeur à virgule du type de *switchee*
+- switch_epsilon:
+	- valid if `typeof(switch_epsilon) == typeof(switchee)`
+	- Used only if *switchee* is a floating / fixed point-resulting expression (`std::is_floating_point(typeof(switchee)) == true || std::is_fixed_point(typeof(switchee)) == true`)
 
 switch_hash_function:
-- valide si `std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
-std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_function)[0].type == typeof(switchee) && std::is_integral(std::returns(switch_hash_function).type) == true`.
-*switch_hash_function* doit donc être une fonction `constexpr` à paramètre unique pouvant prendre en paramètre *switchee* et retourner un entier.
+- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer (`std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
+std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_function)[0].type == typeof(switchee) && std::is_integral(std::returns(switch_hash_function).type) == true`)'.
 	
 switch_block:
 > {
@@ -61,8 +55,8 @@ case_value:
 - one of
 	- `default`
 	- `error`
-	- expression de type `typeof(switchee)` (si une fonction de hash n'est pas utilisée)
-	- expression de type `std::returns(switch_hash_function).type` (si la fonction de hash est utilisée)
+	- expression of type `typeof(switchee)` (if a hashing function is not used)
+	- expression of type `std::returns(switch_hash_function).type` (otherwise)
 
 case_attribute:
 - one of
@@ -74,14 +68,9 @@ case_block:
 > {
 > &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>(0 ... n)</sub></sup> statement
 > };
-
 </details>
 
-
-Une switch case commence par le mot-clé `switch`, suivi par, entre `()`, la variable sur laquelle switcher, puis un bloc de switching, qui peut commencer par du code normal d'initialisation.
-Par la suite, chaque cas est dénoté par `case(x)`, où x est la valeur connue à compile-time sur laquelle switcher. Chaque cas contient ensuite un bloc de code.
-
-Le cas par défault est dénoté par `case(default)`, et un cas d'erreur de parsing est également couvert par `case(error)`. 
+Example:
 
 ```c
 uint var = 0;
@@ -105,31 +94,41 @@ switch(var)
 	};
 };
 ```
-Cet exemple imprimerait:
+Output:
 > Value was 0
 > Value below 2
 
 ### `case(error)`
 Les cas d'erreurs sont spécifiques aux switch-cases qui emploient un hash ou qui travaillent avec des nombres à virgules.
-À l'exemple précédent, si `case(error)` était ajouté, le programmeur recevrait un warning, car il ne peut pas y avoir d'erreurs de parsing pour un switch case.
-Dans le cas où un cas d'erreur n'est pas fourni à un switch-case qui peut fail, le cas défaut sera utilisé en cas d'erreur.
-Si ni un cas d'erreur ni un cas défaut ne sont fournis, le switch est bypassé.
-À noter que des exceptions runtimes lancées à l'intérieur des différents cas ne trigger pas le cas d'erreur et nécessitent un vrai bloc `try`, le cas d'erreur ne couvre que les erreurs de parsing.
+Error cases work with switch cases switching on an enumerated value, floating / fixed point values, or with hashes.
+In the previous example, if `case(error` was added, a warning would be produced, because there cannot be errors with the parsing of integer-based switch cases.
+If no error cases are provided, the default case would be used in case of an error.
+If neither error of default cases are provided, the switch case would be bypassed in case of an error.
+Runtime exceptions thrown from different cases do not trigger the error cases. These cases are strictly for parsing errors.
+The error case is hit in the following conditions:
+- for a floating / fixed point value:
+	- NaN
+	- infinity
+	-  -infinity
+- for an enum:
+	- value not in enum range
+- for a hashable
+	- exception thrown during hashing
 
 ### Ranges
-Permet d'utiliser des ranges de chiffres pour couvrir plusieurs cas.
+With integer-based switch cases, allow for ranges of cases to be used with the `...` operator.
 
 ### Fallthrough
-Le mot-clé `fallsthrough` peut être utilisé pour supporter des cas qui passent au cas suivant après leur exécution.
+The attribute `fallsthrough`can be used to support cases that jump to the following cases after their execution.
 
 ### TODO : Likely / Unlikely
 
-### Decimal support
-Les switch cases permettent de switcher sur des nombres à virgule flottantes et virgule fixe. Un ε doit alors être fourni comme 2e argument du mot-clé `switch`. Si le ε n'est pas fourni, `std::epsilon<type>` est pris comme valeur par défaut.
+### Floating / Fixed point support
+Switch cases can switch on floating / fixed point numbers. An  ε must then be provided as 2nd argument to the switch keyword. (Otherwise, `typeof(switchee).epsilon` is used as default value).
 
 ```c
 float var = 3.141592;
-switch(var) 	// ε omis, std::epsilon<float> utilisé.
+switch(var) 	// ε omited, float.epsilon used.
 {
 	case(std::sqrt(2))
 	{
@@ -157,36 +156,38 @@ switch(var) 	// ε omis, std::epsilon<float> utilisé.
 	};
 };
 ```
-Dans ce cas, on tomberait dans le cas défaut, car le epsilon est beaucoup trop petit.
-On pourrait fournir un epsilon en changeant la 2e ligne par `switch(var, 0.0001)`. Si le switch était effectué avec un tel ε, on tomberait dans le cas de π.
-Si la 1ère ligne était `float var = float.NaN;`, `float var = float.infinity;` ou `float var = -float.infinity;`, on tomberait dans le case(error)
+In this example, the default case would be used, since the epsilon value is incredibly small. 
+A proper epsilon value could be provided by switching the 2nd line for `switch(var, 0.0001)`. 
+If the switch was executed with such an ε, the proper π case would be selected and executed.
+If the 1st line was `float var = float.NaN;`, `float var = float.infinity;` or `float var = -float.infinity;`, the error case would be selected and executed.
 
-### Hashs
-Il est également possible de switcher sur d'autres types qui sont hashable, comme des strings ou tableaux.
-On peut passer au switch case une fonction de switch personalisée avec le 2e argument du switch, case.
+
+### Hashing
+Beside integers, enums and floating / fixed point values, it is also possible to switch on other hashable values, such a strings or arrays.
+A hash function must then be provided as 2nd argument to the `switch` keyword. (Otherwise std::hash is used).
 ```c
-std::string var = "Bon matin";
-switch(var /*, std::hash */)	// std::hash<string> utilisée par défaut, pas besoin de l'indiquer
+std::string var = "Good morning";
+switch(var /*, std::hash */)	// std::hash used by default
 {
-	case("Hello World")		// Conversion du const char* en std::string
+	case("Hello World")		// Conversion from const char* to std::string
 	{
 		std::print("Message was Hello World");
 	};
-	case(std::wstring("Bon matin"))	// Conversion du std::wstring en std::string
+	case(std::wstring("Good morning"))	// Conversion from std::wstring to std::string
 	{
-		std::print("Message was Bon matin");
+		std::print("Message was good morning");
 	};
-	case(1)				// Conversion de l'entier 1 en string "1"
+	case(1)				// Conversion from integer 1 to string "1"
 	{
 		std::print("Message was 1");	
 	};
-	case(null)			// Utilise std::hash<string>(null)
+	case(null)			// Uses std::hash(null)
 	{
 		std::print("No message");
 	};
-	/* case(std::file{"dest.txt"}){}; */	// Compile-time error, impossible de convertir un hash de std::file en std::string at compile-time.
-	/* case("Bon matin"){}; */		// Compile-time error, hash identique présent à deux reprises
-	case(default)				// Couvre le case(error)
+	/* case(std::file{"dest.txt"}){}; */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
+	/* case("Bon matin"){}; */		// Compile-time error, identical hash in two cases
+	case(default)				// Covers the error case
 	{
 		std::print("No message or error parsing message");
 	};
