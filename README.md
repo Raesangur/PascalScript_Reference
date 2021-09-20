@@ -1,3 +1,4 @@
+
 # Fonctionalités du PascalScript
 Language de programmation fortement inspiré du C++, avec des fonctionalités d'autres languages que j'aime.
 
@@ -103,15 +104,20 @@ switch(var /*, std::hash */)	// std::hash<string> utilisée par défaut, pas bes
 	{
 		std::print("Message was Hello World");
 	};
-	case(std::wstring("Bon matin"))
+	case(std::wstring("Bon matin"))	// Conversion du std::wstring en std::string
 	{
 		std::print("Message was Bon matin");
+	};
+	case(1)							// Conversion de l'entier 1 en string "1"
+	{
+		std::print("Message was 1");	
 	};
 	case(null)					// Utilise std::hash<string>(null)
 	{
 		std::print("No message");
 	};
-	/*	case("Bon matin") */	// Erreur, hash identique présent à deux reprises
+	/* case(std::file{"dest.txt"}){};	// Compile-time error, impossible de convertir un hash de std::file en std::string at compile-time.
+	/* case("Bon matin"){}; */	// Compile-time error, hash identique présent à deux reprises
 	case(default)				// Couvre le case(error)
 	{
 		std::print("No message or error parsing message");
