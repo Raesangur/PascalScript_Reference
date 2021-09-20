@@ -4,7 +4,7 @@
 Language de programmation fortement inspiré du C++, avec des fonctionalités d'autres languages que j'aime.
 
 ## Mots-clé
-- [`switch`](##switch-case)
+- [`switch`](#switch-case)
 	- `case`
 		- `case(default)`
 		- `case(error)`
