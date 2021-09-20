@@ -116,7 +116,7 @@ switch(var /*, std::hash */)	// std::hash<string> utilisée par défaut, pas bes
 	{
 		std::print("No message");
 	};
-	/* case(std::file{"dest.txt"}){};	// Compile-time error, impossible de convertir un hash de std::file en std::string at compile-time.
+	/* case(std::file{"dest.txt"}){}; */	// Compile-time error, impossible de convertir un hash de std::file en std::string at compile-time.
 	/* case("Bon matin"){}; */		// Compile-time error, hash identique présent à deux reprises
 	case(default)				// Couvre le case(error)
 	{
