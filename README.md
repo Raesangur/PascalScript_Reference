@@ -95,7 +95,7 @@ switch(var)
 };
 ```
 Output:
-> Value was 0
+> Value was 0 <br>
 > Value below 2
 
 ### `case(error)`
