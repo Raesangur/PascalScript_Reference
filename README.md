@@ -1,14 +1,14 @@
-
-
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
 ## Keywords
+
 - [`switch`](#switch-case)
 	- `case`
 		- `case(default)`
 		- `case(error)`
-	- `fallsthrough`
+	- `likely`, `unlikely`
+     - `continue`
 - types
 	- `typeof`
 	- `instanceof`
@@ -89,7 +89,6 @@ std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_
 
 - case_attribute:
 	- one of
-		- `#fallsthrough`
 		- `#likely`
 		- `#unlikely`
 
@@ -108,9 +107,10 @@ std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_
 uint var = 0;
 switch(var)
 {
-	case(0) #fallsthrough
+	case(0)
 	{
 		std::println("Value was 0");
+                continue;
 	};
 	case(1)
 	{
@@ -133,7 +133,6 @@ Output:
 <br>
 
 ### `case(error)`
-Les cas d'erreurs sont spécifiques aux switch-cases qui emploient un hash ou qui travaillent avec des nombres à virgules.
 Error cases work with switch cases switching on an enumerated value, floating / fixed point values, or with hashes.
 In the previous example, if `case(error` was added, a warning would be produced, because there cannot be errors with the parsing of integer-based switch cases.
 If no error cases are provided, the default case would be used in case of an error.
@@ -157,7 +156,8 @@ With integer-based switch cases, allow for ranges of cases to be used with the `
 <br>
 
 ### Fallthrough
-The attribute `fallsthrough`can be used to support cases that jump to the following cases after their execution.
+Cases do not fall through by default. To jump from another case to the next, the `continue` keyword can be used to jump to the next case in order. 
+This continue can be located within a subbranch of the case. 
 
 <br>
 
