@@ -134,7 +134,7 @@ Output:
 
 ### `case(error)`
 Error cases work with switch cases switching on an enumerated value, floating / fixed point values, or with hashes.
-In the previous example, if `case(error` was added, a warning would be produced, because there cannot be errors with the parsing of integer-based switch cases.
+In the previous example, if `case(error)` was added, a warning would be produced, because there cannot be errors with the parsing of integer-based switch cases.
 If no error cases are provided, the default case would be used in case of an error.
 If neither error of default cases are provided, the switch case would be bypassed in case of an error.
 Runtime exceptions thrown from different cases do not trigger the error cases. These cases are strictly for parsing errors.
@@ -229,16 +229,16 @@ switch(var /*, std::hash */)	// std::hash used by default
 		std::print("No message");
 	};
 	/* case(std::file{"dest.txt"}){}; */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
-	/* case("Bon matin"){}; */		// Compile-time error, identical hash in two cases
+	/* case("Good morning"){}; */		// Compile-time error, identical hash in two cases
 	case(default)				// Covers the error case
 	{
 		std::print("No message or error parsing message");
 	};
 };
+```
 
 <br>
 
-```
 ### Runtime type checking
 Besides values, switch statements can also be used to switch between types at runtime, specifically polymorphic instances through pointer or reference types.
 By using a type as switchee expression in the `switch` statement, it is then possible to use `case(instanceof(someOtherType))` cases. In the following example, class `Vehicle` is defined and classes `Truck`, `Bicycle` and `Boat` are created to inherit from class `Vehicle`.
