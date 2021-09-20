@@ -73,8 +73,7 @@ std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_
 	- one of
 		- `default`
 		- `error`
-		- expression of type `typeof(switchee)` (if a hashing function is not used)
-		- expression of type `std::returns(switch_hash_function).type` (otherwise)
+		- expression of type `typeof(switchee)`. 
 	
 <br>
 
