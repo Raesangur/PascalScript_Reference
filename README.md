@@ -100,7 +100,7 @@ On peut passer au switch case une fonction de switch personalisée avec le 2e ar
 std::string var = "Bon matin";
 switch(var /*, std::hash */)	// std::hash<string> utilisée par défaut, pas besoin de l'indiquer
 {
-	case("Hello World")			// Conversion du const char* en std::string
+	case("Hello World")		// Conversion du const char* en std::string
 	{
 		std::print("Message was Hello World");
 	};
@@ -108,16 +108,16 @@ switch(var /*, std::hash */)	// std::hash<string> utilisée par défaut, pas bes
 	{
 		std::print("Message was Bon matin");
 	};
-	case(1)							// Conversion de l'entier 1 en string "1"
+	case(1)				// Conversion de l'entier 1 en string "1"
 	{
 		std::print("Message was 1");	
 	};
-	case(null)					// Utilise std::hash<string>(null)
+	case(null)			// Utilise std::hash<string>(null)
 	{
 		std::print("No message");
 	};
 	/* case(std::file{"dest.txt"}){};	// Compile-time error, impossible de convertir un hash de std::file en std::string at compile-time.
-	/* case("Bon matin"){}; */	// Compile-time error, hash identique présent à deux reprises
+	/* case("Bon matin"){}; */		// Compile-time error, hash identique présent à deux reprises
 	case(default)				// Couvre le case(error)
 	{
 		std::print("No message or error parsing message");
