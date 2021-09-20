@@ -1,3 +1,5 @@
+
+
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
@@ -8,15 +10,19 @@ Programming language strongly inspired from C++, with features from other langua
 		- `case(error)`
 	- `fallsthrough`
 - types
-	- `uint`, `int`
-	- `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`
-	- `ulong`, `long`
-	- `ufloat`, `float`
-	- `ufloat16`, `ufloat32`, `ufloat64`, `float16`, `float32`, `float64`
-	- `bool`
-	- `void`
-	- `char`, `char8`, `char16`, `char32`
-	- `byte`, `bit`
+	- `typeof`
+	- `instanceof`
+	- `inherits`
+	- fundamental types
+		- `uint`, `int`
+		- `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`
+		- `ulong`, `long`
+		- `ufloat`, `float`
+		- `ufloat16`, `ufloat32`, `ufloat64`, `float16`, `float32`, `float64`
+		- `bool`
+		- `void`
+		- `char`, `char8`, `char16`, `char32`
+		- `byte`, `bit`
 
 
 ## Structures
@@ -27,51 +33,78 @@ Every code block is marked with an opening `{` and a closing `};`
 ### Syntax
 
 <details>
-<summary> Detailed Syntax </summary>
+<summary> <h4>Detailed Syntax</h4> </summary>
 
 - switch_statement:
-	- > `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
+	> `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
+
+<br>
 
 - switchee:
-	- Expression resulting in a numerical value, an enumerated value, a floating-point / fixed-point value or a hashable value.
+	- Expression resulting in a numerical value, an enumerated value, a floating-point / fixed-point value, hashable value or a runtime type (as a pointer type or reference type).
+
+<br>
 
 - switch_epsilon:
 	- valid if `typeof(switch_epsilon) == typeof(switchee)`
 	- Used only if *switchee* is a floating / fixed point-resulting expression (`std::is_floating_point(typeof(switchee)) == true || std::is_fixed_point(typeof(switchee)) == true`)
 
-switch_hash_function:
-- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer (`std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
+<br>
+
+- switch_hash_function:
+	- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer (`std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
 std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_function)[0].type == typeof(switchee) && std::is_integral(std::returns(switch_hash_function).type) == true`)'.
 	
-switch_block:
-> {
-> &nbsp;&nbsp;&nbsp;&nbsp; <sup><sub>(1 ... n)</sub></sup> *case_statement*
-> };
+<br>
 
-case_statement:
-> `case`(*case_value*) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block* 
+- switch_block:
+	> {
+	> &nbsp;&nbsp;&nbsp;&nbsp; <sup><sub>(1 ... n)</sub></sup> *case_statement* <sup><sub>(or)</sub></sup> *case_type_statement*
+	> };
 
-case_value:
-- one of
-	- `default`
-	- `error`
-	- expression of type `typeof(switchee)` (if a hashing function is not used)
-	- expression of type `std::returns(switch_hash_function).type` (otherwise)
+<br>
 
-case_attribute:
-- one of
-	- `#fallsthrough`
-	- `#likely`
-	- `#unlikely`
+- case_statement:
+	> `case`(*case_value* <sup><sub>(or)</sub></sup> `instanceof`(*case_type_value*)) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block* 
+	
+<br>
 
-case_block:
-> {
-> &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>(0 ... n)</sub></sup> statement
-> };
+- case_value:
+	- one of
+		- `default`
+		- `error`
+		- expression of type `typeof(switchee)` (if a hashing function is not used)
+		- expression of type `std::returns(switch_hash_function).type` (otherwise)
+	
+<br>
+
+- case_type_statement:
+	>`case`(`instanceof`(*case_type_value*)) <sup><sub>(optional)</sub></sup> *case_attribute* *case_block*
+		
+<br>
+
+- case_type_value:
+	- valid if *switchee* is a pointer or reference of a type that inherits *case_type_value* (`typeof(switchee) inherits case_type_value == true && (std::is_pointer(typeof(switchee)) || std::is_reference(typeof(switchee)))`)
+
+<br>
+
+- case_attribute:
+	- one of
+		- `#fallsthrough`
+		- `#likely`
+		- `#unlikely`
+
+<br>
+
+- case_block:
+	> {
+	> &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>(0 ... n)</sub></sup> statement
+	> };
 </details>
 
-Example:
+<br>
 
+#### Example:
 ```c
 uint var = 0;
 switch(var)
@@ -98,6 +131,8 @@ Output:
 > Value was 0 <br>
 > Value below 2
 
+<br>
+
 ### `case(error)`
 Les cas d'erreurs sont spécifiques aux switch-cases qui emploient un hash ou qui travaillent avec des nombres à virgules.
 Error cases work with switch cases switching on an enumerated value, floating / fixed point values, or with hashes.
@@ -115,13 +150,21 @@ The error case is hit in the following conditions:
 - for a hashable
 	- exception thrown during hashing
 
+<br>
+
 ### Ranges
 With integer-based switch cases, allow for ranges of cases to be used with the `...` operator.
+
+<br>
 
 ### Fallthrough
 The attribute `fallsthrough`can be used to support cases that jump to the following cases after their execution.
 
+<br>
+
 ### TODO : Likely / Unlikely
+
+<br>
 
 ### Floating / Fixed point support
 Switch cases can switch on floating / fixed point numbers. An  ε must then be provided as 2nd argument to the switch keyword. (Otherwise, `typeof(switchee).epsilon` is used as default value).
@@ -161,6 +204,7 @@ A proper epsilon value could be provided by switching the 2nd line for `switch(v
 If the switch was executed with such an ε, the proper π case would be selected and executed.
 If the 1st line was `float var = float.NaN;`, `float var = float.infinity;` or `float var = -float.infinity;`, the error case would be selected and executed.
 
+<br>
 
 ### Hashing
 Beside integers, enums and floating / fixed point values, it is also possible to switch on other hashable values, such a strings or arrays.
@@ -192,4 +236,27 @@ switch(var /*, std::hash */)	// std::hash used by default
 		std::print("No message or error parsing message");
 	};
 };
+
+<br>
+
 ```
+### Runtime type checking
+Besides values, switch statements can also be used to switch between types at runtime, specifically polymorphic instances through pointer or reference types.
+By using a type as switchee expression in the `switch` statement, it is then possible to use `case(instanceof(someOtherType))` cases. In the following example, class `Vehicle` is defined and classes `Truck`, `Bicycle` and `Boat` are created to inherit from class `Vehicle`.
+```c
+Vehicle* myTruck = new Truck();
+switch(myTruck)
+{
+	case(instanceof(Bicycle)) #fallsthrough
+	case(instanceof(Truck))
+	{
+		std::print("Land vehicle");
+	};
+	case(instanceof(Boat))
+	{
+		std::print("Sea vehicle");
+	};
+};
+```
+Output:
+> Land vehicle
