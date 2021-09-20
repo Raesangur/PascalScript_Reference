@@ -1,6 +1,25 @@
 
+
 # Fonctionalités du PascalScript
 Language de programmation fortement inspiré du C++, avec des fonctionalités d'autres languages que j'aime.
+
+## Mots-clé
+- [`switch`](##switch-case)
+	- `case`
+		- `case(default)`
+		- `case(error)`
+	- `fallsthrough`
+- types
+	- `uint`, `int`
+	- `uint8`, `uint16`, `uint32`, `uint64`, `int8`, `int16`, `int32`, `int64`
+	- `ulong`, `long`
+	- `ufloat`, `float`
+	- `ufloat16`, `ufloat32`, `ufloat64`, `float16`, `float32`, `float64`
+	- `bool`
+	- `void`
+	- `char`, `char8`, `char16`, `char32`
+	- `byte`, `bit`
+
 
 ## Structures
 Tous les segments de code (fonctions, conditions, classes, structures, initialisations ect.) sont dénotés par une `{` d'ouverture et une `};` de fermeture.
