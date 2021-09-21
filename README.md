@@ -104,42 +104,32 @@ Every code block is marked with an opening `{` and a closing `};`
 
 ### Example
 ```c
-for(int i = 0; i < 10; i++)
-{
+for(int i = 0; i <= 5; i++)	// Regular C-style for loop
 	std::println(i);
-	
-	if(i == 5)
-		break;
-};
 ```
 ```c
-for(int i in [0 ... 9])
+for(int i in [0 ... 9])		// Ranged-based for loop
 {
-	std::println(i);
+    std::println(i);
 
-	if(for.index == 5)
-		break;
+    if(for.index == 5)
+        break;
 };
 ```
 ```c
-int i = 10;
-for(i)
-{
-	std::println(10 - i--);
-	
-	if(for.index == 5)
-		break;
-};
+int i = 6;
+for(i)				// For loop with only condition filled in
+    std::println(6 - i--);
 ``` 
 ```c
-for(int[] array = [0 ... 9],
-	int* ptr = array.begin();
-	ptr < array.end(); ptr++)
+for(int[] array = [0 ... 9],	// Two initialized values & two iteration expressions
+    int* ptr = array.begin();
+    ptr < array.end(); *ptr = 0, ptr++)
 {
-	std::println(*ptr);
+    std::println(*ptr);
 
-	if(for.index == 5)
-		break;
+    if(for.index == 5)
+        break;
 };
 ```
 
