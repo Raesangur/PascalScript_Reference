@@ -1,3 +1,4 @@
+
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
@@ -9,9 +10,22 @@ Programming language strongly inspired from C++, with features from other langua
 		- `case(error)`
 	- `likely`, `unlikely`
      - `continue`
-- types
+- [`for`](#for-loops)
+	- `in`
+- metadata & reflections
 	- `typeof`
+	- `sizeof`
+	- `alignof`
+	- `nameof`
+	- `accessof`
+	- `scopeof`
 	- `instanceof`
+	- `memberof<>`
+- types
+	- casts
+		- `cast<>`
+		- `force_cast<>`
+		- `dyn_cast<>`
 	- `inherits`
 	- fundamental types
 		- `uint`, `int`
@@ -23,10 +37,124 @@ Programming language strongly inspired from C++, with features from other langua
 		- `void`
 		- `char`, `char8`, `char16`, `char32`
 		- `byte`, `bit`
+- misc
+	- `using`
 
 
 ## Structures
 Every code block is marked with an opening `{` and a closing `};`
+
+## For loops
+### Syntax
+<details>
+<summary> <h4>Detailed Syntax</h4> </summary>
+
+- for_statement:
+	> `for`(<sup><sub>(optional)</sub></sup> *for_init_statement*; *for_condition*; <sup><sub>(optional)</sub></sup> *for_iteration_expression*) *for_block*
+	- or 
+	> `for`(<sup><sub>(optional)</sub></sup> *for_init_statement*; *ranged_for_declaration* `in` *ranged_for_expression* ) *for_block*
+
+<br>
+
+- for_init_statement:
+	- <sup><sub>(1 ... n)</sub></sup> comma-separated declarations.
+	- If used, must end in a `;`. If unused, `;` may be skipped.
+	- Will be executed once before the beginning of the loop.
+	- Variables declared in the *for_init_statement* in the same scope as variables declared in the *for_block*.
+
+<br>
+
+- for_condition:
+	- A boolean-resulting expression.
+	- This expression is evaluated at the beginning of every iteration of the loop, including the first one.
+
+<br>
+
+- for_iteration_expression:
+	- <sup><sub>(1 ... n)</sub></sup> comma-separated expressions to be executed at the end of the *for_block*.
+	- If unused, the preceding `;` may be skipped.
+	
+<br>
+
+- for_block:
+	> {
+	> &nbsp;&nbsp;&nbsp;&nbsp;<sup><sub>(0 ... n)</sub></sup> statement
+	> };
+	
+<br>
+
+- ranged_for_declaration:
+	- A declaration of a variable of type `typeof(*ranged_for_expression.begin())` or `typeof(*ranged_for_expression.begin())&`.
+	- The variable declared in the *ranged_for_declaration* will be updated before each iteration of the loop
+	
+<br>
+
+- ranged_for_expression:
+	- An expression which resulting value has a `begin()` and `end()` function defined, that both return an object defining the `++operator` or the `operator++`
+		```c
+		using rfe = ranged_for_expression,
+		memberof<rfe>(begin()) == true &&
+		memberof<rfe>(end()) == true &&
+		std::returns(rfe.begin()).type == std::returns(rfe.end()).type &&
+		(memberof<rfe.begin()>(++operator) == true || memberof<rfe.begin()>(operator++))
+		``` 
+
+</details>
+<br>
+
+### Example
+```c
+for(int i = 0; i < 10; i++)
+{
+	std::println(i);
+	
+	if(i == 5)
+		break;
+};
+```
+```c
+for(int i in [0 ... 9])
+{
+	std::println(i);
+
+	if(for.index == 5)
+		break;
+};
+```
+```c
+int i = 10;
+for(i)
+{
+	std::println(10 - i--);
+	
+	if(for.index == 5)
+		break;
+};
+``` 
+```c
+for(int[] array = [0 ... 9],
+	int* ptr = array.begin();
+	ptr < array.end(); ptr++)
+{
+	std::println(*ptr);
+
+	if(for.index == 5)
+		break;
+};
+```
+
+All output:
+> 0 <br>
+> 1 <br>
+> 2 <br>
+> 3 <br>
+> 4 <br>
+> 5
+	
+### TODO: index attribute
+
+### TODO: range-based loop
+
 
 ## Switch Case
 
@@ -47,13 +175,24 @@ Every code block is marked with an opening `{` and a closing `};`
 
 - switch_epsilon:
 	- valid if `typeof(switch_epsilon) == typeof(switchee)`
-	- Used only if *switchee* is a floating / fixed point-resulting expression (`std::is_floating_point(typeof(switchee)) == true || std::is_fixed_point(typeof(switchee)) == true`)
+	- Used only if *switchee* is a floating / fixed point-resulting expression
+		```c
+		std::is_floating_point(typeof(switchee)) == true ||
+		std::is_fixed_point(typeof(switchee)) == true
+		```
 
 <br>
 
 - switch_hash_function:
-	- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer (`std::is_function(switch_hash_function) == true && std::is_constexpr(switch_hash_function) &&
-std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_function)[0].type == typeof(switchee) && std::is_integral(std::returns(switch_hash_function).type) == true`)'.
+	- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer
+		```c
+		using shf = switch_hash_function,
+		std::is_function(shf) == true &&
+		std::is_constexpr(shf) &&
+		std::parameters(shf).count == 1 &&
+		std::parameters(shf)[0].type == typeof(switchee) &&
+		std::is_integral(std::returns(shf).type) == true
+		```
 	
 <br>
 
@@ -83,7 +222,11 @@ std::parameters(switch_hash_function).count == 1 && std::parameters(switch_hash_
 <br>
 
 - case_type_value:
-	- valid if *switchee* is a pointer or reference of a type that inherits *case_type_value* (`typeof(switchee) inherits case_type_value == true && (std::is_pointer(typeof(switchee)) || std::is_reference(typeof(switchee)))`)
+	- valid if *switchee* is a pointer or reference of a type that inherits *case_type_value* 
+		```c
+		typeof(switchee) inherits case_type_value == true &&
+		(std::is_pointer(typeof(switchee)) || std::is_reference(typeof(switchee)))
+		```
 
 <br>
 
