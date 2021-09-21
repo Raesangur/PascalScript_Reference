@@ -1,3 +1,4 @@
+
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
@@ -95,7 +96,8 @@ Every code block is marked with an opening `{` and a closing `};`
         memberof<rfe>(begin()) == true &&
         memberof<rfe>(end()) == true &&
         std::returns(rfe.begin()).type == std::returns(rfe.end()).type &&
-        (memberof<rfe.begin()>(++operator) == true || memberof<rfe.begin()>(operator++))
+        (memberof<rfe.begin()>(++operator()) == true || memberof<rfe.begin()>(operator++())) &&
+        memberof<rfe.begin()>(operator==(typeof(rfe.begin())) == true
         ``` 
 
 </details>
@@ -142,8 +144,31 @@ All output:
     
 ### TODO: index attribute
 
-### TODO: range-based loop
+### range-based loop
+`for` statements can also be used to loop over an iterating range of values, such as an array, a string literal or any standard library containers.
+The keyword `in` is used to denote the *ranged_for_declaration* from the *ranged_for_expression*.
+These ranged-based `for` loops need the iterating object to have the `begin()` and `end()` methods defined, that both return an object able to iterate with the `++operator` or `operator++` and compare with the `operator==`.
+These range-based `for` loops will simply expand in a regular `for` loop, where syntax (1) is equivalent to syntax (2).
+```c
+// Syntax (1)
+for(int i in [0 ... 9])
+{
+	std::println(i);
+};
 
+// Syntax (2)
+// ranged_for_expression was of type int[]&&;
+// int[].begin() and int[].end() returns an int*
+for(int[]&& __expression = [0 ... 9],
+    int* __it = __expression.begin();
+    __it < __expression.end();
+    ++__it)    // If ++operator() is not available for iterator type, will try with operator++()
+{
+    int i = *it;
+    // ranged-based for loop statements begin here:
+    std::println(i);
+};
+```
 
 ## Switch Case
 
@@ -356,9 +381,9 @@ switch(myTruck)
     case(instanceof(Bicycle))
         continue;
     case(instanceof(Truck))
-        std::print("Land vehicle");
+        std::println("Land vehicle");
     case(instanceof(Boat))
-        std::print("Sea vehicle");
+        std::println("Sea vehicle");
 };
 ```
 Output:
