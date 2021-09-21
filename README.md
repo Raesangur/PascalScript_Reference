@@ -142,7 +142,7 @@ All output:
 > 4 <br>
 > 5
     
-### TODO: index attribute
+<br>
 
 ### range-based loop
 `for` statements can also be used to loop over an iterating range of values, such as an array, a string literal or any standard library containers.
@@ -169,6 +169,52 @@ for(int[]&& __expression = [0 ... 9],
     std::println(i);
 };
 ```
+
+<br>
+
+### `for.index` variable
+The `for.index` variable is an easy way to keep track of the loop index during ranged-based `for` loops (or any non-index-based `for` loops). 
+This variable is normally uninitialized, but if used, will keep track of the current loop index.
+For range-based `for` loops, the `for.index` variable will be calculated from the begin position and the loop iterator (see example (1)).
+For other loops, there are two possibilities:
+    - If the `for` loop contains a simple `for(someType i = someValue; i < someOtherValue; i++)`, and `memberof<someType>(operator-(typeof(someValue))) == true`, the `for.index` variable will be calculated from the used loop index `i` as long as this index is not modified during the loop execution (see example(2)).
+    - If the `for` loop is more complicated, has an index that can't be easily calculated from or modifies the index during execution, the `for.index` variable will be calculated independently (see example(3)).
+
+```c
+// EXAMPLE (1)
+// Syntax (1)
+for(int i in [0 ... 9])
+{
+	std::println(for.index + i);
+};
+
+// Syntax (2) <- Will be generated from Syntax (1)
+for(int[]&& __expression = [0 ... 5],
+	int* __begin = __expression.begin(),
+    int* __it = __begin;
+    __it < __expression.end(); ++__it)
+{
+    int i = *it;
+    // ranged-based for loop statements begin here:
+    std::println((__it - __begin) + i);	    // for.index is simply substituted
+};
+
+// EXAMPLE (2)
+// Syntax (1)
+for(int i = 5; i <= 10; i++)
+    std::println(i - for.index);
+    
+// Syntax (2) <- Will be generated from Syntax (1)
+for(int __begin = 5, int i = 5; i <= 10; i++)
+    std::println(i - (i - __begin));
+
+// EXAMPLE (3)
+// Syntax (1)
+// Syntax (2) <- Will be generated from Syntax (1)
+```
+Output:
+	>	// TODO
+<br>
 
 ## Switch Case
 
