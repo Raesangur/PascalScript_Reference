@@ -154,7 +154,7 @@ All output:
 <summary> <h4>Detailed Syntax</h4> </summary>
 
 - switch_statement:
-	> `switch`(*switchee*, <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
+	> `switch`(*switchee*; <sup><sub>(optional)</sub></sup> *switch_epsilon* <sup><sub>(or)</sub></sup> *switch_hash_function*) *switch_block*
 
 <br>
 
@@ -165,6 +165,7 @@ All output:
 
 - switch_epsilon:
 	- valid if `typeof(switch_epsilon) == typeof(switchee)`
+	- If unused, the preceding `;` may be skipped.
 	- Used only if *switchee* is a floating / fixed point-resulting expression
 		```c
 		std::is_floating_point(typeof(switchee)) == true ||
@@ -174,6 +175,7 @@ All output:
 <br>
 
 - switch_hash_function:
+	- If unused, the preceding `;` may be skipped.
 	- valid if *switch_hash_function* is a `constexpr` function taking *switchee* as a single parameter and returning an integer
 		```c
 		using shf = switch_hash_function,
@@ -237,20 +239,19 @@ All output:
 
 #### Example:
 ```c
-uint var = 0;
-switch(var)
+switch(uint var = 0)
 {
-	case(0)
-	{
-		std::println("Value was 0");
-                continue;
-	};
-	case(1)
-		std::println("Value below 2");
-	case(2 ... 9) #likely
-		std::println("Range-case value");
-	case(default)
-		std::println("Default value");
+    case(0)
+    {
+        std::println("Value was 0");
+        continue;
+    };
+    case(1)
+        std::println("Value below 2");
+    case(2 ... 9) #likely
+        std::println("Range-case value");
+    case(default)
+        std::println("Default value");
 };
 ```
 Output:
@@ -299,22 +300,22 @@ Switch cases can switch on floating / fixed point numbers. An  ε must then be p
 float var = 3.141592;
 switch(var) 	// ε omited, float.epsilon used.
 {
-	case(std::sqrt(2))
-		std::println("irrational √2");
-	case(std::phi)
-		std::println("irrational golden number");
-	case(std::e)
-		std::println("irrational e");
-	case(std::pi)
-		std::println("irrational π");
-	case(default) 
-		std::println("Not in supported irrational list");
-	case(error)
-		std::println("Error while parsing number");
+    case(std::sqrt(2))
+        std::println("irrational √2");
+    case(std::phi)
+        std::println("irrational golden number");
+    case(std::e)
+        std::println("irrational e");
+    case(std::pi)
+        std::println("irrational π");
+    case(default) 
+        std::println("Not in supported irrational list");
+    case(error)
+        std::println("Error while parsing number");
 };
 ```
 In this example, the default case would be used, since the epsilon value is incredibly small. 
-A proper epsilon value could be provided by switching the 2nd line for `switch(var, 0.0001)`. 
+A proper epsilon value could be provided by switching the 2nd line for `switch(var; 0.0001)`. 
 If the switch was executed with such an ε, the proper π case would be selected and executed.
 If the 1st line was `float var = float.NaN;`, `float var = float.infinity;` or `float var = -float.infinity;`, the error case would be selected and executed.
 
@@ -325,21 +326,21 @@ Beside integers, enums and floating / fixed point values, it is also possible to
 A hash function must then be provided as 2nd argument to the `switch` keyword. (Otherwise std::hash is used).
 ```c
 std::string var = "Good morning";
-switch(var /*, std::hash */)	// std::hash used by default
+switch(var /*; std::hash */)	// std::hash used by default
 {
-	case("Hello World")		// Conversion from const char* to std::string
-		std::print("Message was Hello World");
-	case(std::wstring("Good morning"))	// Conversion from std::wstring to std::string
-		std::print("Message was good morning");
-	case(1)				// Conversion from integer 1 to string "1"
-		std::print("Message was 1");	
-	case(null)			// Uses std::hash(null)
-		std::print("No message");
+    case("Hello World")		// Conversion from const char* to std::string
+        std::print("Message was Hello World");
+    case(std::wstring("Good morning"))	// Conversion from std::wstring to std::string
+        std::print("Message was good morning");
+    case(1)				// Conversion from integer 1 to string "1"
+        std::print("Message was 1");	
+    case(null)			// Uses std::hash(null)
+        std::print("No message");
 
-	/* case(std::file{"dest.txt"}) */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
-	/* case("Good morning") */		// Compile-time error, identical hash in two cases
-	case(default)				// Covers the error case
-		std::print("No message or error parsing message");
+    /* case(std::file{"dest.txt"}) */	// Compile-time error, impossible to convert a std::file hash into std::string hash at compile-time.
+    /* case("Good morning") */		// Compile-time error, identical hash in two cases
+    case(default)			// Covers the error case
+        std::print("No message or error parsing message");
 };
 ```
 
@@ -353,12 +354,12 @@ Type checking cases and value checking cases cannot be mixed in the same switch 
 Vehicle* myTruck = new Truck();
 switch(myTruck)
 {
-	case(instanceof(Bicycle))
-                continue;
-	case(instanceof(Truck))
-		std::print("Land vehicle");
-	case(instanceof(Boat))
-		std::print("Sea vehicle");
+    case(instanceof(Bicycle))
+        continue;
+    case(instanceof(Truck))
+        std::print("Land vehicle");
+    case(instanceof(Boat))
+        std::print("Sea vehicle");
 };
 ```
 Output:
