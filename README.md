@@ -178,7 +178,7 @@ All output:
 		```c
 		using shf = switch_hash_function,
 		std::is_function(shf) == true &&
-		std::is_constexpr(shf) &&
+		std::is_constexpr(shf) == true &&
 		std::parameters(shf).count == 1 &&
 		std::parameters(shf)[0].type == typeof(switchee) &&
 		std::is_integral(std::returns(shf).type) == true
