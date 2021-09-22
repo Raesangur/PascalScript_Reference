@@ -1,3 +1,4 @@
+
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
@@ -10,6 +11,7 @@ Programming language strongly inspired from C++, with features from other langua
     - [`likely`, `unlikely`](#likely-unlikely)
      - [`continue`](#fallthrough)
 - [`for`](#for-loops)
+	- [`do...for`](#do...for-loop)
     - [`in`](#range-based-loop)
 - metadata & reflections
     - `typeof`
@@ -55,6 +57,11 @@ Every code block is marked with an opening `{` and a closing `};`
 
 <br>
 
+- do_for_statement:
+	> `do for`(<sup><sub>(optional)</sub></sup> *for_init_statement*; *for_condition*; <sup><sub>(optional)</sub></sup> *for_iteration_expression*) *for_block*
+
+<br>
+
 - for_init_statement:
     - <sup><sub>(1 ... n)</sub></sup> comma-separated declarations.
     - If used, must end in a `;`. If unused, `;` may be skipped.
@@ -65,7 +72,8 @@ Every code block is marked with an opening `{` and a closing `};`
 
 - for_condition:
     - A boolean-resulting expression.
-    - This expression is evaluated at the beginning of every iteration of the loop, including the first one.
+    - In a regular or range-based `for` loop, this expression is evaluated at the beginning of every iteration of the loop, including the first one.
+    - In a `do...for` loop, this expression is evaluated at the end of every iteration of the loop.
 
 <br>
 
@@ -104,7 +112,7 @@ Every code block is marked with an opening `{` and a closing `};`
 
 ### Example
 ```c
-for(int i = 0; i <= 5; i++) // Regular C-style for loop
+for(int i = 0; i < 6; i++) // Regular C-style for loop
     std::println(i);
 ```
 ```c
@@ -132,7 +140,10 @@ for(int[] array = [0 ... 9],    // Two initialized values & two iteration expres
         break;
 };
 ```
-
+```c
+do for(int i = 0; i < 5; i++)
+	std::println(i);
+```
 All output:
 > 0 <br>
 > 1 <br>
@@ -140,6 +151,11 @@ All output:
 > 3 <br>
 > 4 <br>
 > 5
+    
+<br>
+
+### do...for loop
+A special flavor of the `for` loop is the `do...for` loop, in which the condition is evaluated at the end of the *for_block*.
     
 <br>
 
