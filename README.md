@@ -7,11 +7,11 @@ Programming language strongly inspired from C++, with features from other langua
 - [`switch`](#switch-case)
     - `case`
         - `case(default)`
-        - `case(error)`
-    - `likely`, `unlikely`
-     - `continue`
+        - [`case(error)`](#case(error))
+    - [`likely`, `unlikely`](#likely-unlikely)
+     - [`continue`](#fallthrough)
 - [`for`](#for-loops)
-    - `in`
+    - [`in`](#range-based-loop)
 - metadata & reflections
     - `typeof`
     - `sizeof`
@@ -183,37 +183,71 @@ For other loops, there are two possibilities:
 ```c
 // EXAMPLE (1)
 // Syntax (1)
-for(int i in [0 ... 9])
+std::println("EXAMPLE 1 - Syntax 1");
+for(int i in [0 ... 5])
 {
-	std::println(for.index + i);
+	std::print(for.index + i);
 };
-
 // Syntax (2) <- Will be generated from Syntax (1)
+std::println("EXAMPLE 1 - Syntax 2");
 for(int[]&& __expression = [0 ... 5],
 	int* __begin = __expression.begin(),
     int* __it = __begin;
     __it < __expression.end(); ++__it)
 {
     int i = *it;
-    // ranged-based for loop statements begin here:
-    std::println((__it - __begin) + i);	    // for.index is simply substituted
+    std::print((__it - __begin) + i);	    // for.index is simply substituted
 };
 
 // EXAMPLE (2)
 // Syntax (1)
-for(int i = 5; i <= 10; i++)
-    std::println(i - for.index);
-    
+std::println("\nEXAMPLE 2 - Syntax 1");
+for(int i = 5; i < 10; i++)
+    std::print(i - for.index);
+
 // Syntax (2) <- Will be generated from Syntax (1)
-for(int __begin = 5, int i = 5; i <= 10; i++)
-    std::println(i - (i - __begin));
+std::println("EXAMPLE 2 - Syntax 2");
+for(int __begin = 5, int i = 5; i < 10; i++)
+    std::print(i - (i - __begin));
 
 // EXAMPLE (3)
 // Syntax (1)
+std::println("\nEXAMPLE 3 - Syntax 1");
+for(int i = 0; i < 5; i++)
+{
+	std::print(i + for.index);
+	
+	if (for.index == 3)
+		i = 5;
+};
+
 // Syntax (2) <- Will be generated from Syntax (1)
+// for loop indexing variable and modified during execution, a standalone index will be generated
+std::println("EXAMPLE 3 - Syntax 2");
+for(int __index = 0, int i = 0; i < 5; __index++, i++)
+{
+	std::print(i + __index);
+
+	if(__index == 3)
+		i = 5;
+};
 ```
 Output:
-	>	// TODO
+>	EXAMPLE 1 - Syntax 1
+>  0246810
+>  EXAMPLE 1 - Syntax 2
+>  0246810
+>  
+>  EXAMPLE 2 - Syntax 1
+>  55555
+>  EXAMPLE 2 - Syntax 2
+>  55555
+>  
+>  EXAMPLE 3 - Syntax 1 
+>  0246
+>  EXAMPLE 3 - Syntax 2
+>  0246
+
 <br>
 
 ## Switch Case
@@ -338,7 +372,7 @@ If neither error of default cases are provided, the switch case would be bypasse
 Runtime exceptions thrown from different cases do not trigger the error cases. These cases are strictly for parsing errors.
 The error case is hit in the following conditions:
 - for a floating / fixed point value:
-    - NaN
+    - any NaN value
     - infinity
     -  -infinity
 - for an enum:
@@ -359,7 +393,8 @@ This continue can be located within a subbranch of the case.
 
 <br>
 
-### TODO : Likely / Unlikely
+### Likely Unlikely
+The `#likely` and `#unlikely` attributes allow for smart compiler optimizations, telling the compiler which switch case branch is the most or least likely to occur, so that the compiler can place it accordingly in the execution chain. Optimization behavior is not guaranteed.
 
 <br>
 
