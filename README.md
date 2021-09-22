@@ -38,6 +38,59 @@ Programming language strongly inspired from C++, with features from other langua
         - `void`
         - `char`, `char8`, `char16`, `char32`
         - `byte`, `bit`
+- operators
+    - assignment operators
+        - `operator=`
+        - `operator+=`
+        - `operator-=`
+        - `operator*=`
+        - `operator/=`
+        - `operator%=`
+        - `operator&=`
+        - `operator|=`
+        - `operator^=`
+        - `operator<<=`
+        - `operator>>=`
+    - arithmetic operators
+        - `operator+`
+        - `operator++`
+        - `++operator`
+        - `operator-`
+        - `operator--`
+        - `--operator`
+        - `operator*`
+        - `operator**`
+        - `operator/`
+        - `operator%`
+        - `~operator`
+        - `operator&` 
+        - `operator|`
+        - `operator^`
+        - `operator<<`
+        - `operator>>`
+    - logical & comparison operators
+        - `!operator`
+        - `operator&&`
+        - `operator||`
+        - `operator==`
+        - `operator===`
+        - `operator!=`
+        - `operator!==`
+        - `operator>`
+        - `operator>=`
+        - `operator<`
+        - `operator<=`
+        - `operator<=>`
+    - member access & others
+        - `operator[]`
+        - `*operator`
+        - `&operator`
+        - `&&operator`
+        - `operator.`
+        - `operator->`
+        - `operator::`
+        - `operator,`
+        - `operator?:`
 - misc
     - `using`
 
