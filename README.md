@@ -1,4 +1,3 @@
-
 # PascalScript
 Programming language strongly inspired from C++, with features from other languages that I like.
 
@@ -153,7 +152,7 @@ These range-based `for` loops will simply expand in a regular `for` loop, where 
 // Syntax (1)
 for(int i in [0 ... 9])
 {
-	std::println(i);
+    std::println(i);
 };
 
 // Syntax (2)
@@ -186,17 +185,17 @@ For other loops, there are two possibilities:
 std::println("EXAMPLE 1 - Syntax 1");
 for(int i in [0 ... 5])
 {
-	std::print(for.index + i);
+    std::print(for.index + i);
 };
 // Syntax (2) <- Will be generated from Syntax (1)
 std::println("EXAMPLE 1 - Syntax 2");
 for(int[]&& __expression = [0 ... 5],
-	int* __begin = __expression.begin(),
+    int* __begin = __expression.begin(),
     int* __it = __begin;
     __it < __expression.end(); ++__it)
 {
     int i = *it;
-    std::print((__it - __begin) + i);	    // for.index is simply substituted
+    std::print((__it - __begin) + i);       // for.index is simply substituted
 };
 
 // EXAMPLE (2)
@@ -215,10 +214,10 @@ for(int __begin = 5, int i = 5; i < 10; i++)
 std::println("\nEXAMPLE 3 - Syntax 1");
 for(int i = 0; i < 5; i++)
 {
-	std::print(i + for.index);
-	
-	if (for.index == 3)
-		i = 5;
+    std::print(i + for.index);
+    
+    if (for.index == 3)
+        i = 5;
 };
 
 // Syntax (2) <- Will be generated from Syntax (1)
@@ -226,14 +225,14 @@ for(int i = 0; i < 5; i++)
 std::println("EXAMPLE 3 - Syntax 2");
 for(int __index = 0, int i = 0; i < 5; __index++, i++)
 {
-	std::print(i + __index);
+    std::print(i + __index);
 
-	if(__index == 3)
-		i = 5;
+    if(__index == 3)
+        i = 5;
 };
 ```
 Output:
->	EXAMPLE 1 - Syntax 1
+>   EXAMPLE 1 - Syntax 1
 >  0246810
 >  EXAMPLE 1 - Syntax 2
 >  0246810
